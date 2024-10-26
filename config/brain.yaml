@@ -1,0 +1,55 @@
+epochs: 50
+log_every: 10 
+ckpt_every: 50_000
+accumulation_steps: 1
+lr: 1e-4
+
+results_dir: "./results/brain"
+model: "DiffMa-L/2"
+
+image_size: 224  #[224, 256, 512]
+global_batch_size: 8
+global_seed: 0
+vae: "ema" #choices=["ema", "mse"]
+num_workers: 8
+ct_ckpt: "./pretrain_ct_vision_embedder/brain_patch_size_2.pt"
+dt_rank: 16
+d_state: 16
+
+init_from_pretrain_ckpt: False
+pretrain_ckpt_path: "./results/017-DiM-B-2/checkpoints/0800000.pt"
+init_train_steps: 0_800_000
+lr_: 1e-4
+
+#sample
+ckpt: "results/brain/022-VMamba-BL-2/checkpoints/0750000.pt" 
+save_dir: "./result_sample/brain_ssim_VMamaba_50epoch"
+seed: 0
+sample_global_batch_size: 1 
+sample_num_steps: 250 
+sample_num_workers: 1
+load_ckpt_type: "ema"   #choices=["ema", "model"]
+
+#train embedder
+embedder_epoch: 100
+embedder_ckpt_every: 5000
+embedder_num_workers: 4
+embedder_global_seed: 0
+embedder_global_batch_size: 32
+embedder_embed_dim: 512
+embedder_patch_size: 2
+embedder_results_dir: './results_ct_brain'
+
+
+# train
+ct_image_folder_train: './datasets/brain/B_train'    #CT
+mir_image_folder_train: './datasets/brain/A_train'    #MIR
+mask_image_folder_train: './datasets/brain/C_train'    #mask
+
+# val
+ct_image_folder_val: './datasets/brain/B_test'    #CT
+mir_image_folder_val: './datasets/brain/A_test'    #MIR
+mask_image_folder_val: './datasets/brain/C_test'    #mask
+
+
+# CUDA_VISIBLE_DEVICES=1 torchrun --master_port=12341 --nnodes=1 --nproc_per_node=1 sample.py --config config/brain.yaml
